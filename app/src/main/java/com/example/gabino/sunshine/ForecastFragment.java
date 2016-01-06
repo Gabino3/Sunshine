@@ -1,5 +1,6 @@
 package com.example.gabino.sunshine;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,8 +13,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,6 +70,15 @@ public class ForecastFragment extends Fragment {
 
         ListView forecastListView = (ListView)rootView.findViewById(R.id.list_view_forecast);
         forecastListView.setAdapter(forecastAdapter);
+        forecastListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Toast.makeText(getContext(), forecastAdapter.getItem(position), Toast.LENGTH_SHORT).show();
+                Intent showDetails = new Intent(getContext(), DetailActivity.class);
+                showDetails.putExtra(Intent.EXTRA_TEXT, forecastAdapter.getItem(position));
+                startActivity(showDetails);
+            }
+        });
 
         return rootView;
     }
@@ -78,12 +90,12 @@ public class ForecastFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-
         if(item.getItemId() == R.id.action_refresh){
             FetchWeatherTask task = new FetchWeatherTask();
             task.execute("sandiego");
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
